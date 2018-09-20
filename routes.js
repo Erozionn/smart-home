@@ -3,7 +3,6 @@
 
 
 module.exports = function(app, passport, express, isReachable, url, request, bodyParser, empty, nmap, io, con, functions, info, passportSocketIo, cookieParser, session) {
-    console.log(info);
     // io.set('authorization', passportSocketIo.authorize({
     //     cookieParser: cookieParser,       // the same middleware you registrer in express
     //     key:          'connect.sid',       // the name of the cookie where express/connect stores its session_id
@@ -401,9 +400,7 @@ module.exports = function(app, passport, express, isReachable, url, request, bod
     
     var weather;
     
-    function getWeather(info){
-        console.log("HELLO");
-        console.log(info);
+    function getWeather(){
         request({
             uri: info.weather.uri,
             method: 'GET',
@@ -430,10 +427,10 @@ module.exports = function(app, passport, express, isReachable, url, request, bod
         });
     }
     
-    getWeather(info);
+    getWeather();
     getGarageInfo()
     setInterval(function(){
-        getWeather(info);
+        getWeather();
         getGarageInfo()
     },300000)
     

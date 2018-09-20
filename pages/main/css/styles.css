@@ -188,10 +188,6 @@ button .material-icons {
   height: 100px;
 }
 
-.navbar li.nav-item.active {
-  background-color: #00b899;
-}
-
 .navbar li.nav-item {
   text-align: center;
   padding: 2vh 2vw 2vh 2vw;
@@ -199,6 +195,10 @@ button .material-icons {
   display: inline-block;
   float: none;
   min-width: 150px;
+}
+
+.navbar li.nav-item.active {
+  background-color: #00b899;
 }
 
 .navbar li.nav-item i {
@@ -556,12 +556,14 @@ hr {
   text-align: left;
 }
 
-.people-wrap .person .info .in, .people-wrap .person .info .out {
+.people-wrap .person .info .in {
   text-transform: uppercase;
   font-weight: bold;
 }
 
 .people-wrap .person .info .out {
+  text-transform: uppercase;
+  font-weight: bold;
   color: #e92059;
 }
 
@@ -852,7 +854,17 @@ hr {
   max-width: 200px;
 }
 
-.page-login .login-wrapper, .page-login .signup-wrapper, .page-signup .login-wrapper, .page-signup .signup-wrapper {
+.page-login .login-wrapper, .page-login .signup-wrapper {
+  max-width: 700px;
+  width: 100%;
+  min-height: 100vh;
+  padding-top: 20vh;
+  margin: auto;
+  overflow: hidden;
+  color: #fff;
+}
+
+.page-signup .login-wrapper, .page-signup .signup-wrapper {
   max-width: 700px;
   width: 100%;
   min-height: 100vh;

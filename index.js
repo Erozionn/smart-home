@@ -39,8 +39,6 @@ app.use(flash()); // use connect-flash for flash messages stored in session
 //Connect to DB.
 var con = mysql.createConnection(info.mysql);
 
-console.log(info);
-
 
 
 // routes ======================================================================
