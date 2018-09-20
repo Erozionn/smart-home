@@ -206,7 +206,7 @@ module.exports = function(app, passport, express, isReachable, url, request, bod
                         });
                     });
                 }
-                var faceTracking = require("/var/www/html/homeauto/trackFace.js");
+                var faceTracking = require("/var/www/html/homeauto/lib/trackFace.js");
                 
                 
             } else {
