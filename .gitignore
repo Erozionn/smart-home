@@ -1,4 +1,5 @@
-**/images
+/images
+/pages/main/images/people
 **/debugImages
 hiddenInfo.js
 **/.vscode
