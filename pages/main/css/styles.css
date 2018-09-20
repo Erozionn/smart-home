@@ -223,7 +223,8 @@ button .material-icons {
   background-repeat: no-repeat;
   background-color: #111;
   overflow: hidden;
-  background-image: url("../images/background.jpg");
+  background-image: url("../images/background0.jpg");
+  background-size: cover;
 }
 
 .pages .pages-inner {

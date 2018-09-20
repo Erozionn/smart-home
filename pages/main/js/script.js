@@ -524,3 +524,9 @@ $(document).on("click", "#refreshApi", function(e){
     });
 });
 
+(function () {
+    var min = 0;
+    var max = 1;
+    var num = Math.floor(Math.random()*(max-min+1)+min);
+$(".pages").css({"background-image": "url('../main/images/background" + num + ".jpg')"})    
+})();
