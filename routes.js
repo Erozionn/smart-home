@@ -146,8 +146,8 @@ module.exports = function(app, passport, express, isReachable, url, request, bod
     
     
     
-    console.log("Performing system check...")
-    
+    console.log("Performing system check...")   
+
     //Is garage online?
     isGarageOnline()
     function isGarageOnline(){
@@ -170,6 +170,7 @@ module.exports = function(app, passport, express, isReachable, url, request, bod
     
     //Is video feed online?
     isVideoOnline(true);
+    var cameraTimeout;
     function isVideoOnline(boot = false){
         isReachable('192.168.2.231:8080').then(function(reachable){
     
@@ -177,7 +178,8 @@ module.exports = function(app, passport, express, isReachable, url, request, bod
             console.log(reachable == true ? "[\x1b[32mONLINE\x1b[0m] Video feed" : "[\x1b[31mOFFLINE\x1b[0m] Video feed")
             
             if (reachable == false){
-                setTimeout(function(){
+                clearTimeout(cameraTimeout);
+                cameraTimeout = setTimeout(function(){
                     isVideoOnline();
                 }, 300000);
                 return;

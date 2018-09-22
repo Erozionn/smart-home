@@ -276,11 +276,20 @@ function refreshWeather(){
                 //options: options
             });
             if(data.alerts){
+                console.log(data.alerts.length)
+                var alert = "";
+                for (var i = 0; i < data.alerts.length; i++){
+                    alert = alert + "<b>"+data.alerts[i].title+" ("+moment.unix(data.alerts[i].time).fromNow()+"):</b> "+data.alerts[i].description.replace(/(?:\r\n|\r|\n|#)/g, ' ') + " ";
+                }
+
                 $(".weather-alert").fadeIn(1000);
-                $(".weather-alert h6").html("<b>"+data.alerts[0].title+" ("+moment.unix(data.alerts[0].time).fromNow()+"):</b> "+data.alerts[0].description.replace(/#/gi, ''));
+                console.log(alert);
+                $(".weather-alert h6").html(alert);
                 $(".weather-alert h6").marquee({
                     pauseOnHover: true,
-                    duration: 12000
+                    speed: 5,
+                    duplicated: true,
+                    startVisible: true
                   });
                 // $(".alert h6").mouseover(function () {     
                 //     $(this).removeAttr("style");
@@ -524,9 +533,9 @@ $(document).on("click", "#refreshApi", function(e){
     });
 });
 
-(function () {
-    var min = 0;
-    var max = 1;
-    var num = Math.floor(Math.random()*(max-min+1)+min);
-$(".pages").css({"background-image": "url('../main/images/background" + num + ".jpg')"})    
-})();
+// (function () {
+//     var min = 0;
+//     var max = 1;
+//     var num = Math.floor(Math.random()*(max-min+1)+min);
+// $(".pages").css({"background-image": "url('../main/images/background" + num + ".jpg')"})    
+// })();
