@@ -84,7 +84,7 @@ module.exports = function(passport, functions) {
                     newUserMysql.email    = email;
                     newUserMysql.password = hash; // use the generateHash function in our user model
                 
-                    var insertQuery = "INSERT INTO smart_home.users ( email, password, isVerified, api_key ) values ('" + email +"','"+ hash +"', 0, " + generateApiKey() + ")";
+                    var insertQuery = "INSERT INTO smart_home.users ( email, password, isVerified, api_key, first_name, last_name ) values ('" + email +"','"+ hash +"', 0, '" + functions.generateApiKey() + "', NULL, NULL)";
                     
                     connection.query(insertQuery,function(err,rows){
 

@@ -456,28 +456,80 @@ module.exports = function(app, passport, express, isReachable, url, request, bod
             if(!empty(result) && result[0].isVerified == true){
 
                 var method = req.params.method;
+                console.log
 
-                if(method == "garage"){
-                    console.log(req.body);
-                    switch(req.body.action){
-                        case "open": {
-                            res.send({status: 200, message: "success"});
-                            break;
+                switch(method){
+                    case "garage": {
+                        console.log("test garage")
+
+                        switch(req.body.action){
+                            case "open": {
+
+                                //Open Garage Door
+                                request({
+                                    uri: 'http://192.168.2.232:2334',
+                                    body: JSON.stringify({"garage": "toggle"}),
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    }
+                                }
+                                , function (error, response) {
+                                    
+                                    if(!empty(error)){
+                                        res.json({error: "error"});
+                                        return;
+                                    }
+                                    
+                                    if(!empty(response)){
+                                        console.log(error,response.body);
+                                        res.json(response.body);
+                                    }
+                                    return;
+                                }); 
+                                //res.send({status: 200, message: "success"});
+                                break;
+                            }
+                            default: {
+                                res.status(400).send({status: 400, message: "unknown action"});
+                                break;
+                            }
                         }
-                        default: {
-                            res.status(400).send({status: 400, message: "unknown action"});
-                            break;
-                        }
+
+                        break;
                     }
-                } else if(method == "front_door"){
-                    switch(req.body.action){
-                        case "open": {
-                            res.send({status: 200, message: "success"});
-                        }
+                    case "debug": {
+                        console.log(req.body.action);
+                        res.send({status: 22, message: "DEBUGGED"});
+                        break;
                     }
-                } else {
-                    res.status(400).send("unknown method");
+                    default: {
+                        res.status(400).send({status: 400, message: "unknown method"});
+                        break;
+                    }
                 }
+
+                // if(method == "garage"){
+                //     console.log(req.body);
+                //     switch(req.body.action){
+                //         case "open": {
+                //             res.send({status: 200, message: "success"});
+                //             break;
+                //         }
+                //         default: {
+                //             res.status(400).send({status: 400, message: "unknown action"});
+                //             break;
+                //         }
+                //     }
+                // } else if(method == "front_door"){
+                //     switch(req.body.action){
+                //         case "open": {
+                //             res.send({status: 200, message: "success"});
+                //         }
+                //     }
+                // } else {
+                //     res.status(400).send("unknown method");
+                // }
                 //res.send(req.params);
             } else {
                 res.status(401).send("invalid api_key/not verified");
@@ -546,5 +598,3 @@ module.exports = function(app, passport, express, isReachable, url, request, bod
         
     }  
 };
-
-

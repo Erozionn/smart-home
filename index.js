@@ -3,7 +3,8 @@
 var express          = require('express');
 var app              = express();
 var server           = require('http').Server(app);
-var port             = process.env.PORT || 80;
+var port             = process.env.PORT || 8080;
+var path           = require('path');
 
 var passport         = require('passport');
 var flash            = require('connect-flash');
@@ -28,6 +29,7 @@ var info             = require('./config/hiddenInfo')
 require('./config/passport')(passport, functions)
 
 app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, '/views'));
 app.use(bodyParser.json()); // for parsing application/json
 app.use(cookieParser()); // read cookies (needed for auth)
 app.use(bodyParser.urlencoded({ extended: true }));
