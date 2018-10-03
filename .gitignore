@@ -3,6 +3,11 @@
 **/debugImages
 hiddenInfo.js
 **/.vscode
+fontawesome.css
+all.css
+regular.css
+**/font
+**/tests
 
 # Logs
 logs

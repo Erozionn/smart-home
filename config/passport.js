@@ -3,21 +3,21 @@
 // load all the things we need
 var LocalStrategy   = require('passport-local').Strategy;
 
-var mysql = require('mysql');
+// var mysql = require('mysql');
 
 var bcrypt = require("bcrypt-nodejs");
 
-var connection = mysql.createConnection({
-    host: "localhost",
-    user: "smart_home",
-    password: "ekjqebRx321",
-    timezone: "America/Toronto",
-    });
+// var connection = mysql.createConnection({
+//     host: "localhost",
+//     user: "smart_home",
+//     password: "ekjqebRx321",
+//     timezone: "America/Toronto",
+//     });
 
 //connection.query('USE vidyawxx_build2');	
 
 // expose this function to our app using module.exports
-module.exports = function(passport, functions) {
+module.exports = function(passport, functions, connection, users) {
     console.log(functions);
 
 	// =========================================================================
@@ -79,19 +79,29 @@ module.exports = function(passport, functions) {
 
                 bcrypt.hash(password, null, null, function(err, hash) {
                     // Store hash in your password DB.
-                    var newUserMysql = new Object();
+                    var newUser = new Object();
                     
-                    newUserMysql.email    = email;
-                    newUserMysql.password = hash; // use the generateHash function in our user model
+                    newUser.email    = email;
+                    newUser.password = hash; // use the generateHash function in our user model
+                    newUser.api_key  = functions.generateApiKey();
                 
-                    var insertQuery = "INSERT INTO smart_home.users ( email, password, isVerified, api_key, first_name, last_name ) values ('" + email +"','"+ hash +"', 0, '" + functions.generateApiKey() + "', NULL, NULL)";
+                    var insertQuery = "INSERT INTO smart_home.users ( email, password, isVerified, api_key, first_name, last_name, address ) values ('" + email +"','"+ hash +"', 0, '" + newUser.api_key + "', NULL, NULL, NULL)";
                     
                     connection.query(insertQuery,function(err,rows){
-
+                        
                         if(err) throw err;
                         console.log(rows)
-                        newUserMysql.id = rows.insertId;
-                        return done(null, newUserMysql);
+                        newUser.id = rows.insertId;
+                        users[newUser.email] = {
+                            email: newUser.email,
+                            state: "offline",
+                            lastStateChange: Date.now(),
+                            //first_name: result[i]["first_name"],
+                            //last_name: result[i]["last_name"],
+                            //address: result[i]["address"],
+                            api_key: newUser.api_key,
+                        };
+                        return done(null, newUser);
                     });	
                 });
             }	

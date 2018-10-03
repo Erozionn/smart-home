@@ -21,12 +21,19 @@
     <script src="/main/js/jquery.mCustomScrollbar.concat.min.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     
+    <script type="text/javascript" src="/main/js/jquery.touchSwipe.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wnumb/1.0.4/wNumb.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.1.0/nouislider.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.1.0/nouislider.js"></script>
+    
     <link rel="stylesheet" href="/main/css/jquery.mCustomScrollbar.css" type="text/css">
     <link rel="stylesheet" href="/main/css/flat-ui.min.css" type="text/css">
+    <link rel="stylesheet" href="/main/css/regular.css" type="text/css">
+    <link rel="stylesheet" href="/main/css/fontawesome.css" type="text/css">
     <link rel="stylesheet" href="/main/css/styles.min.css" type="text/css">
     <link rel="stylesheet" href="/main/css/weather-icons.min.css" type="text/css">
     <link rel="stylesheet" href="/main/css/weather-icons-wind.min.css" type="text/css">
-    <meta name="viewport" content ="width=device-width,initial-scale=1,user-scalable=yes" />
+    <meta name="viewport" content ="width=device-width,initial-scale=1,user-scalable=no" />
 
     <link rel="apple-touch-icon" sizes="180x180" href="/main/images/favicon/apple-touch-icon.png?v=lk9j3KQaN8">
     <link rel="icon" type="image/png" sizes="32x32" href="/main/images/favicon/favicon-32x32.png?v=lk9j3KQaN8">
@@ -40,6 +47,7 @@
 
     <script>
     var api_key = "<%= api_key %>";
+    var first_name = "<%= first_name %>";
     </script>
 
 </head>
@@ -63,33 +71,57 @@
         
         
     </div>
-    <div class="pages">
+    <div class="pages carousel slide" id="main-carousel">
         <!-- <ol class="pages-indicators">
             <li data-target="#pagesExampleIndicators" data-slide-to="0" class="active"></li>
             <li data-target="#pagesExampleIndicators" data-slide-to="1"></li>
             <li data-target="#pagesExampleIndicators" data-slide-to="2"></li>
             <li data-target="#pagesExampleIndicators" data-slide-to="3"></li>
         </ol> -->
-        <div class="pages-inner">
+        <div class="pages-inner carousel-inner">
 
-            <div class="pages-item home active">
+            <div class="pages-item home carousel-item active">
                 <div class="title mainTitle">
-                        <i class="material-icons">home</i>
-                        <h1>Home</h1>
+                    <i class="far fa-home"></i>
+                    <h1>Home</h1>
+                </div>
+                <hr>
+                <div class="welcome greenBox">
+                    <div class="title-wrap">
+                        <h4></h4>
                     </div>
-                    <hr>
-                <div class="people-wrap noMarginMobile">
+                    <h5></h5>
+                </div>
+                <div class="lights grayBox noMarginMobile">
+                    <div class="title-wrap">
+                        <h6 class="far fa-lightbulb">Lights</h6>
+                        <div class="spacer"></div>    
+                    </div>
+                    <div class="room">
+                        <div class="dimmer-wrap" id="alex_room">
+                            <div class="title-wrap">
+                                <h6>Alex's Room</h6>
+                            </div>
+                            <div class="dimmer">
+
+                            </div>     
+                        </div>
+                            
+                    </div>
+                </div>
+                <div class="people-wrap grayBox noMarginMobile">
                     <div class="title-wrap">
                         <h6>Home Presence</h6>
                         <div class="spacer"></div>    
                     </div>
                     <div class="people"></div>
                 </div>
+                
             </div>
 
-            <div class="pages-item camera">
+            <div class="pages-item carousel-item camera">
                 <div class="title mainTitle">
-                    <i class="material-icons">videocam</i>
+                    <i class="far fa-video"></i>
                     <h1>Front Door</h1>
                 </div>
                 <hr>
@@ -116,9 +148,9 @@
                 
             </div>
 
-            <div class="pages-item weather">
+            <div class="pages-item carousel-item weather">
                 <div class="title mainTitle">
-                    <i class="material-icons">toys</i>
+                    <i class="far fa-thermometer-half"></i>
                     <h1>Temperature</h1>
                 </div>
                 <hr>
@@ -148,7 +180,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+                        <i class="far fa-compass location"> Saint-Lambert, QC</i>
                     </div>
                     <div class="detailed-weather noMarginMobile">
                         <div class="chart-container">
@@ -158,9 +190,9 @@
                 </div>
             </div>
 
-            <div class="pages-item garage">
+            <div class="pages-item carousel-item garage">
                     <div class="title mainTitle">
-                        <i class="material-icons">directions_car</i>
+                        <i class="far fa-car"></i>
                         <h1>Garage Door</h1>
                     </div>
                 <hr>
@@ -187,9 +219,9 @@
                 
             </div>
 
-            <div class="pages-item settings">
+            <div class="pages-item carousel-item settings">
                 <div class="title mainTitle">
-                    <i class="material-icons">settings</i>
+                    <i class="far fa-cog"></i>
                     <h1>Settings</h1>
                 </div>
                 <hr>
@@ -234,8 +266,8 @@
             <span class="sr-only">Next</span>
         </a> -->
     </div>
-    <div id="footer" class="fixed-bottom">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div id="footer" class="fixed-bottom bg-dark">
+        <nav class="navbar navbar-expand-lg navbar-dark">
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
               <!-- <span class="navbar-toggler-icon"></span> -->
             </button>
@@ -247,32 +279,32 @@
             </div>
             <div class="collapse navbar-collapse" id="navbarNav">
               <ul class="navbar-nav">
-                <li class="nav-item animate active">
+                <li class="nav-item animate active" data-target="#main-carousel" data-slide-to="0">
                   <a class="nav-link" href="#">
-                      <i class="material-icons">home</i>
+                      <i class="far fa-home"></i>
                       <div class="text">Home</div></a>
                 </li>
-                <li class="nav-item animate">
+                <li class="nav-item animate" data-target="#main-carousel" data-slide-to="1">
                   <a class="nav-link" href="#">
-                        <i class="material-icons">videocam</i>
+                        <i class="far fa-video"></i>
                         <div class="text">Front Door</div></a>
                   </a>
                 </li>
-                <li class="nav-item animate">
+                <li class="nav-item animate" data-target="#main-carousel" data-slide-to="2">
                   <a class="nav-link" href="#">
-                        <i class="material-icons">toys</i>
+                        <i class="far fa-thermometer-half"></i>
                         <div class="text">Temperature</div></a>
                   </a>
                 </li>
-                <li class="nav-item animate">
+                <li class="nav-item animate" data-target="#main-carousel" data-slide-to="3">
                   <a class="nav-link" href="#">
-                        <i class="material-icons">directions_car</i>
+                    <i class="far fa-car"></i>
                         <div class="text">Garage Door</div></a>
                   </a>
                 </li>
-                <li class="nav-item animate">
+                <li class="nav-item animate" data-target="#main-carousel" data-slide-to="4">
                     <a class="nav-link" href="#">
-                          <i class="material-icons">settings</i>
+                          <i class="far fa-cog"></i>
                           <div class="text">Settings</div></a>
                     </a>
                   </li>
