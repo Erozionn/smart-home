@@ -3,6 +3,7 @@
 
 const TuyaDevice = require('tuyapi');
 
+
 rooms = {}
 
 
@@ -111,6 +112,17 @@ setInterval(function(){
         successRedirect : '/', // redirect to the secure profile section
         failureRedirect : '/login', // redirect back to the signup page if there is an error
         failureFlash : true // allow flash messages
+    }));
+
+
+    //Google Authentication OAuth 2.0
+    app.get('/auth/google',
+    passport.authorize('google', { scope : ['profile', 'email'] }));
+
+    app.get('/auth/google/callback',
+    passport.authorize('google', {
+        successRedirect : '/',
+        failureRedirect : '/googleaccountfailed'
     }));
 
     app.get('/accountstatus', function(req, res) {
@@ -623,6 +635,7 @@ setInterval(function(){
 
                         if(currentPos.lng == undefined || currentPos.lat == undefined){
                             res.status(400).send({status: 400, message: "missing params"});
+                            console.log("missing paramsssss", req.body)
                             break;
                         }
 
@@ -630,7 +643,7 @@ setInterval(function(){
                         
 
                         var isInRange = functions.arePointsNear(currentPos, info.homeAddress, 0.5);
-                        //console.log(result[0].first_name + " " + result[0].last_name + " is in range: " + isInRange);
+                        console.log(result[0].first_name + " " + result[0].last_name + " is in range: " + isInRange);
                         
                         if (isInRange){
 

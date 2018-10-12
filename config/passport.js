@@ -2,7 +2,7 @@
 				
 // load all the things we need
 var LocalStrategy   = require('passport-local').Strategy;
-
+var GoogleStrategy = require('passport-google-oauth20').Strategy;
 // var mysql = require('mysql');
 
 var bcrypt = require("bcrypt-nodejs");
@@ -48,6 +48,25 @@ module.exports = function(passport, functions, connection, users) {
       passport.deserializeUser(function(user, done) {
         done(null, user);
       });
+
+
+    // =========================================================================
+    // GOOGLE SIGNUP ===========================================================
+    // =========================================================================
+
+      passport.use(new GoogleStrategy({
+        clientID: "732746538204-tmg764h3r0bscmj1001hqodgdj3srv63.apps.googleusercontent.com",
+        clientSecret: "gnVHM-R6Vdijh8nSqlG-HGyd",
+        callbackURL: "http://home.alextasciyan.com/auth/google/callback"
+      },
+      function(accessToken, refreshToken, profile, cb) {
+          console.log(profile)
+        // User.findOrCreate({ googleId: profile.id }, function (err, user) {
+        //   return cb(err, user);
+        // });
+      }
+    ));
+
 
  	// =========================================================================
     // LOCAL SIGNUP ============================================================

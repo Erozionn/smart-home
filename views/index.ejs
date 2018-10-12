@@ -94,19 +94,61 @@
                 </div>
                 <div class="lights grayBox noMarginMobile">
                     <div class="title-wrap">
-                        <h6 class="far fa-lightbulb">Lights</h6>
+                        <h6 class="far fa-door-closed"> Rooms</h6>
                         <div class="spacer"></div>    
                     </div>
-                    <div class="room">
-                        <div class="dimmer-wrap" id="alex_room">
-                            <div class="title-wrap">
-                                <h6>Alex's Room</h6>
-                            </div>
-                            <div class="dimmer">
-
-                            </div>     
-                        </div>
+                    <div class="rooms">
+                        <div class="room">
+                            <a uk-toggle="target: #modal-group-1">
+                                <i class="far fa-bed"></i>
+                                <span>Alex's Room</span>    
+                            </a>
                             
+                        </div>
+                        <div class="room">
+                            <a href="#">
+                                <i class="far fa-bed"></i>
+                            </a>
+                            <span>Parent's Room</span>
+                        </div>
+                        <div class="room">
+                            <a href="#">
+                                <i class="far fa-couch"></i>
+                            </a>
+                            <span>Living Room</span>
+                        </div>
+                        <div class="room">
+                            <a href="#">
+                                <i class="far fa-utensils"></i>
+                            </a>
+                            <span>Kitchen</span>
+                        </div>
+                        <div class="room">
+                            <a href="#">
+                                <i class="far fa-glasses"></i>
+                            </a>
+                            <span>Upstairs</span>
+                        </div>
+                    </div>
+                    <div class="rooms_popup">
+                        <div id="modal-group-1" class="uk-modal-full" uk-modal>
+                            <div class="uk-modal-dialog uk-modal-body">
+                                <div class="title-wrap">
+                                    <h6>Alex's Room</h6>  
+                                </div>
+                                <button class="uk-modal-close-full uk-close-large far fa-arrow-left" type="button"></button>
+                                <div class="lights grayBox noMarginMobile">
+                                    <div class="title-wrap">
+                                        <h6 class="far fa-lightbulb">Lights</h6>
+                                        <div class="spacer"></div>    
+                                    </div>
+                                    <div class="dimmer-wrap" id="alex_room">
+                                        <div class="dimmer"></div>
+                                        <span>Ceiling Lights</span>
+                                    </div>    
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="people-wrap grayBox noMarginMobile">
@@ -267,17 +309,17 @@
         </a> -->
     </div>
     <div id="footer" class="fixed-bottom bg-dark">
-        <nav class="navbar navbar-expand-lg navbar-dark">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-              <!-- <span class="navbar-toggler-icon"></span> -->
-            </button>
+        <nav class="navbar  navbar-dark">
+            <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button> -->
             <div class="datetime d-sm-none">
                 <span class="clock">
                     <span class="hour"></span><span class="colon flashit">:</span><span class="minute"></span>
                 </span>
                 <span class="date"></span>
             </div>
-            <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="" id="navbarNav">
               <ul class="navbar-nav">
                 <li class="nav-item animate active" data-target="#main-carousel" data-slide-to="0">
                   <a class="nav-link" href="#">

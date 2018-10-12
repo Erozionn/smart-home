@@ -1,9 +1,20 @@
 $bright: #01ebc2;
 $bright2: #00d4ad;
 $darker: hsl(170, 100%, 36%);
-$yellow: #fedf01;
+$green: #01ebc2;
+$yellow: rgba(249, 200, 14, 1);
+$pink: rgba(255, 51, 102, 1);
+$orange: rgba(255, 119, 51, 1);
+$blue: rgba(32, 164, 243, 1);
 $background: #343a40;
 $background-lighter: #49525a;
+
+/* RGB */
+// $color1: rgba(249, 200, 14, 1);
+// $color2: rgba(1, 235, 194, 1);
+// $color3: rgba(255, 51, 102, 1);
+// $color4: rgba(255, 119, 51, 1);
+// $color5: rgba(32, 164, 243, 1);
 
 
 * {
@@ -39,6 +50,7 @@ body {
     background: -webkit-linear-gradient(left, $bright2 0%, $bright 100%);
     background: linear-gradient(to right, $bright2 0%, $bright 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$bright2', endColorstr='$bright',GradientType=0 );
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 45px 0px;
   }
 
   .grayBox {
@@ -54,6 +66,7 @@ body {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$background', endColorstr='$background-lighter',GradientType=0 );
     border-radius: 3px;
     color: #fff;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 45px 0px;
   }
 
   .far {
@@ -81,60 +94,7 @@ body {
     float: right;
   }
   
-  @media screen and (min-width: 768px) {
-    .left {
-      float: left;
-    }
-    .right {
-      float: right;
-    }
-    .half {
-      width: 50%;
-    }
-
-
-  }
   
-  @media screen and (max-width: 1049px) {
-    .noMarginMobile, .greenBox, .grayBox {
-      margin-right: 0 !important;
-      margin-left: 0 !important;
-    }
-
-    .pages {
-      background-color: #1b1b1b !important;
-      background-image: none !important;
-      min-height: 100vh;
-
-      .pages-inner {
-        background-color: #1b1b1b !important;
-
-        .pages-item>.title.mainTitle {
-          i {
-            color: $bright;
-          }
-        }
-        hr {
-          display: none;
-        }
-        h1,h2,h3,h4,h5,h6 {
-          color: #fff;
-        }
-
-        .copyright {
-          span {
-            color: #fff;
-          }
-        }
-      }
-
-
-    }
-
-    .people-wrap .person .person-image {
-      width: 60px !important;
-    }
-  }
   
   .pages-item.active {
     display: block !important;
@@ -169,7 +129,7 @@ body {
     width: 100vw;
     height: 100vh;
     z-index: 1035;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     background-color: #111;
@@ -270,6 +230,11 @@ body {
         height: 100px;
       }
     }
+
+    #navbarNav {
+      width: 100%;
+    }
+
     li.nav-item {
       &.active {
         background-color: #00b899;
@@ -319,7 +284,7 @@ body {
       margin: auto;
       //position: absolute;
       min-width: 100vw;
-
+      min-height: 88vh;
       >div {
         vertical-align: top;
       }
@@ -328,6 +293,7 @@ body {
     .welcome {
       display: block;
       margin: auto;
+      box-shadow: none;
       .title-wrap h4 {
         color: #fff;
       }
@@ -985,3 +951,220 @@ body {
     }
   }
 }
+
+
+.dimmer-wrap {
+  max-width: 125px;
+  width: 100%;
+  .dimmer {
+    height: 175px;
+    width: 100%;
+    background-color: $background-lighter;
+    position: relative;
+    overflow: hidden;
+    border-radius: 3px;
+    border: 0;
+    box-shadow: none;
+
+    .noUi-connect {
+      background-color: $bright;
+    }
+
+    .noUi-handle {
+      display: none;
+    }
+  }
+}
+
+  
+.rooms {
+  margin-top: 5vmin;
+  text-align: left;
+
+  .room {
+
+    display: inline-block;
+    margin: 0 2.5vmin 2.5vmin 2.5vmin;
+    width: 4em;
+    text-align: center;
+    line-height: 1em;
+    color: #fff;
+    vertical-align: top;
+
+    i {
+      line-height: 3em;
+      width: 3em;
+      height: 3em;
+      border-radius: 50%;
+      margin-bottom: 5px;
+      color: #fff;
+      font-size: 21px;
+    }  
+  }
+  
+  .room:nth-child(1n) i {
+    background-color: $blue;
+  }
+  .room:nth-child(2n) i {
+    background-color: $green;
+  }
+  .room:nth-child(3n) i {
+    background-color: $orange;
+  }
+  .room:nth-child(4n) i {
+    background-color: $pink;
+  }
+  .room:nth-child(5n) i {
+    background-color: $yellow;
+  }
+} 
+
+.uk-modal-body {
+  height: 100%;
+
+  .uk-modal-close-full {
+    right: initial;
+    left: 0;
+    border: 0;
+  }
+}
+
+//MOBILE
+
+@media screen and (min-width: 768px) {
+  .left {
+    float: left;
+  }
+  .right {
+    float: right;
+  }
+  .half {
+    width: 50%;
+  }
+
+
+}
+
+@media screen and (max-width: 1049px) {
+  .noMarginMobile, .greenBox, .grayBox {
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+  }
+  
+  h1,h2,h3,h4,h5,h6,span {
+    color: $background;
+  }
+
+  .pages-item>div, .greenBox, .grayBox {
+    background: transparent;
+  }
+
+  .pages {
+    background-color: #f5f5f5 !important;
+    background-image: none !important;
+    min-height: 100vh;
+
+    .pages-inner {
+      background-color: #f5f5f5 !important;
+
+      .pages-item>.title.mainTitle {
+        i {
+          color: $bright;
+        }
+      }
+
+      
+
+      hr {
+        display: none;
+      }
+      
+
+      .copyright {
+        span {
+          color: $background;
+        }
+      }
+    }
+
+
+  }
+
+  .people-wrap .person .person-image {
+    width: 60px !important;
+  }
+
+  #footer {
+    background-color: #efefef !important;
+    #navbarNav {
+      width: 100%;
+    }
+
+    .datetime {
+      display: none;
+    }
+
+    .nav-item {
+      height: initial;
+      min-width: initial;
+      margin: 4vw;
+      padding: 0;
+      
+      i {
+        font-size: 5vw;
+        color: $background;
+        background-color: transparent;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+      }
+    }
+
+    .nav-item.active {
+      background-color: transparent;
+      i {
+        background-color: #00b899;
+        color: #fff;  
+      }
+        
+    }
+    
+    .nav-link {
+
+      height: initial;
+
+      > div {
+        display: none;
+      }
+    } 
+  }
+  .people-wrap {
+    .person .info .last-time {
+      color: #d0d0d0;
+    }
+    
+    .title-wrap{
+      max-width: 100%;
+      display: block;
+    }
+  }
+  
+  .spacer {
+    max-width: 100%;
+    width: 100%;
+    height: 1px;
+    background-color: #c3c3c3;
+  }
+
+  
+}
+
+
+
+
+
+
+//END OF MOBILE
+
+
