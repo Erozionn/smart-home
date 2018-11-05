@@ -18,7 +18,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.slim.js"></script>
-    <script src="/main/js/jquery.mCustomScrollbar.concat.min.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     
     <script type="text/javascript" src="/main/js/jquery.touchSwipe.min.js"></script>
@@ -106,47 +105,83 @@
                             
                         </div>
                         <div class="room">
-                            <a href="#">
+                            <a uk-toggle="target: #modal-group-2">
                                 <i class="far fa-bed"></i>
                             </a>
                             <span>Parent's Room</span>
                         </div>
                         <div class="room">
-                            <a href="#">
+                            <a uk-toggle="target: #modal-group-3">
                                 <i class="far fa-couch"></i>
                             </a>
                             <span>Living Room</span>
                         </div>
                         <div class="room">
-                            <a href="#">
+                            <a uk-toggle="target: #modal-group-4">
                                 <i class="far fa-utensils"></i>
                             </a>
                             <span>Kitchen</span>
                         </div>
                         <div class="room">
-                            <a href="#">
+                            <a uk-toggle="target: #modal-group-5">
                                 <i class="far fa-glasses"></i>
                             </a>
                             <span>Upstairs</span>
                         </div>
                     </div>
                     <div class="rooms_popup">
-                        <div id="modal-group-1" class="uk-modal-full" uk-modal>
+                        <div id="modal-group-1" class="uk-modal-full room_modal" uk-modal>
+                            <div class="modal-header">
+                                <h6>Alex's Room</h6>  
+                                <button class="uk-modal-close-full uk-close-large far fa-arrow-left" type="button"></button>    
+                            </div>
                             <div class="uk-modal-dialog uk-modal-body">
-                                <div class="title-wrap">
-                                    <h6>Alex's Room</h6>  
-                                </div>
-                                <button class="uk-modal-close-full uk-close-large far fa-arrow-left" type="button"></button>
                                 <div class="lights grayBox noMarginMobile">
                                     <div class="title-wrap">
                                         <h6 class="far fa-lightbulb">Lights</h6>
                                         <div class="spacer"></div>    
                                     </div>
-                                    <div class="dimmer-wrap" id="alex_room">
+                                    <div class="dimmer-wrap" room="alex_room" type='tasmota'>
                                         <div class="dimmer"></div>
                                         <span>Ceiling Lights</span>
+                                    </div>
+                                    <div class="dimmer-wrap" room="alex_room"  type='hue'>
+                                        <div class="dimmer"></div>
+                                        <span>Desk Lights</span>
                                     </div>    
                                 </div>
+                            </div>
+                        </div>
+                        <div id="modal-group-2" class="uk-modal-full room_modal" uk-modal>
+                            <div class="modal-header">
+                                <h6>Parents's Room</h6>  
+                                <button class="uk-modal-close-full uk-close-large far fa-arrow-left" type="button"></button>    
+                            </div>
+                            <div class="uk-modal-dialog uk-modal-body">
+                            </div>
+                        </div>
+                        <div id="modal-group-3" class="uk-modal-full room_modal" uk-modal>
+                            <div class="modal-header">
+                                <h6>Living Room</h6>  
+                                <button class="uk-modal-close-full uk-close-large far fa-arrow-left" type="button"></button>    
+                            </div>
+                            <div class="uk-modal-dialog uk-modal-body">
+                            </div>
+                        </div>
+                        <div id="modal-group-4" class="uk-modal-full room_modal" uk-modal>
+                            <div class="modal-header">
+                                <h6>Kitchen</h6>  
+                                <button class="uk-modal-close-full uk-close-large far fa-arrow-left" type="button"></button>    
+                            </div>
+                            <div class="uk-modal-dialog uk-modal-body">
+                            </div>
+                        </div>
+                        <div id="modal-group-5" class="uk-modal-full room_modal" uk-modal>
+                            <div class="modal-header">
+                                <h6>Upstairs</h6>  
+                                <button class="uk-modal-close-full uk-close-large far fa-arrow-left" type="button"></button>    
+                            </div>
+                            <div class="uk-modal-dialog uk-modal-body">
                             </div>
                         </div>
                     </div>
@@ -158,7 +193,58 @@
                     </div>
                     <div class="people"></div>
                 </div>
-                
+                <div uk-slider="finite: true" uk-height-viewport="min-height: 350" class="weather-slider noSwipe">
+                    <ul class="uk-slider-items uk-child-width-5-6 uk-grid">
+                        <li>
+                            <div class="temp-wrapper noMarginMobile greenBox">
+                                <div class="inside-temp">
+                                    <div class="title-wrap">
+                                        <h6>Inside Temperature</h6> 
+                                    </div>
+                                    <h1 class="temp"><%= localTemp.temp %><sup>°</sup></h1>    
+                                </div>
+                                <div class="outside-temp">
+                                    <div class="title-wrap">
+                                        <h6>Inside Humidity</h6>    
+                                    </div>
+                                    <h1 class="inside-humidity"><%= localTemp.humidity %>&percnt;</h1>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="daily-weather noMarginMobile greenBox">
+                                <h6>24 Hour Weather</h6>
+                                <i class="far fa-compass location"> Saint-Lambert, QC</i>
+                                <div class="chart-container">
+                                    <canvas id="hourly-weather-chart"></canvas>
+                                </div>
+                                
+                                <ul class="cards">
+                                </ul>
+
+                            </div>  
+                        </li>
+                        <li>
+                            <div class="weekly-weather noMarginMobile greenBox">
+                                <h6>Weekly Weather</h6>
+                                <i class="far fa-compass location"> Saint-Lambert, QC</i>
+                                <div class="chart-container">
+                                    <canvas id="weekly-weather-chart"></canvas>
+                                </div>
+                                
+                                <ul class="cards">
+                                    <li class="monday"></li>
+                                    <li class="tuesday"></li>
+                                    <li class="wednesday"></li>
+                                    <li class="thursday"></li>
+                                    <li class="friday"></li>
+                                    <li class="saturday"></li>
+                                    <li class="sunday"></li>
+                                </ul>
+                            </div>  
+                        </li>
+                    </ul>
+                </div>
             </div>
 
             <div class="pages-item carousel-item camera">
@@ -204,7 +290,7 @@
                     </div>    
                 </div>
                 <div class="weather-wrap">
-                    <div class="temp-wrapper noMarginMobile">
+                    <!-- <div class="temp-wrapper noMarginMobile">
                         <div class="inside-temp">
                             <h3>Inside Temperature</h3>
                             <div class="spacer"></div>
@@ -228,7 +314,7 @@
                         <div class="chart-container">
                             <canvas id="hourly-weather-chart"></canvas>
                         </div>
-                    </div>     
+                    </div>      -->
                 </div>
             </div>
 
@@ -308,7 +394,7 @@
             <span class="sr-only">Next</span>
         </a> -->
     </div>
-    <div id="footer" class="fixed-bottom bg-dark">
+    <div id="footer" class="bg-dark">
         <nav class="navbar  navbar-dark">
             <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>

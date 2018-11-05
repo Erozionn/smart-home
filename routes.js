@@ -1,15 +1,12 @@
 // app/routes.js
 
 
-const TuyaDevice = require('tuyapi');
-
-
 rooms = {}
 
 
 
 
-module.exports = function(app, passport, express, isReachable, url, request, bodyParser, empty, nmap, io, con, functions, info, users, passportSocketIo, cookieParser, session) {
+module.exports = function(app, passport, express, isReachable, url, request, bodyParser, empty, nmap, io, con, functions, info, users, async, mqtt, passportSocketIo, cookieParser, session) {
     // io.set('authorization', passportSocketIo.authorize({
     //     cookieParser: cookieParser,       // the same middleware you registrer in express
     //     key:          'connect.sid',       // the name of the cookie where express/connect stores its session_id
@@ -39,39 +36,83 @@ module.exports = function(app, passport, express, isReachable, url, request, bod
 // Initialize Rooms ====================
 // =====================================
 
-for(var i = 0; i < Object.keys(info["rooms"]).length; i++){
+// for(var i = 0; i < Object.keys(info["rooms"]).length; i++){
 
-    var it = Object.keys(info["rooms"])[i];
-    rooms[Object.keys(info["rooms"])[i]] = new TuyaDevice({
-        id: info["rooms"][it].id,
-        key: info["rooms"][it].key,
-        ip: info["rooms"][it].ip
-    });
-}
+//     var room_name = Object.keys(info["rooms"])[i];
+//     rooms[Object.keys(info["rooms"])[i]] = {
+//         ip: info["rooms"][room_name].ip
+//     };
+// }
 
-console.log(rooms)
+var client  = mqtt.connect('mqtt://localhost')
+ 
+client.on('connect', function () {
+
+    for (var i = 0; i < Object.keys(info.rooms.tasmota).length; i++){
+        var room_to_sub = Object.keys(info.rooms.tasmota)[i];
+        client.subscribe(`stat/${room_to_sub}/RESULT`, function (err) {
+    if (!err) {
+        client.publish(`cmnd/${room_to_sub}/POWER`, "")
+        client.publish(`cmnd/${room_to_sub}/Dimmer`, "")
+        console.log("MQTT Subscribed")
+    }
+  })
+    }
+  
+})
+
+client.on('message', function (topic, message) {
+
+    if (/^stat.*RESULT$/.test(topic)){
+        var room = topic.split("/")[1];
+        var result = JSON.parse(message);
+
+        if (result["POWER"]){
+            info.rooms.tasmota[room].state = result["POWER"];
+        }
+
+        if (result["Dimmer"]) {
+            info.rooms.tasmota[room].bri = result["Dimmer"];
+        }
+
+        return;
+    }
+    
+
+})
 
 // =====================================
 // Refresh Users =======================
 // =====================================
-
+var firstUserRefresh = true;
 function refreshUsers(){
     con.query(`SELECT * FROM smart_home.users ORDER BY email`, function (err, result, fields) {
         if (err) throw err;
         //users = result;
 
         for (var i = 0; i < result.length; i++){
-            users[result[i]["email"]] = {
-                email: result[i]["email"],
-                first_name: result[i]["first_name"],
-                last_name: result[i]["last_name"],
-                address: result[i]["address"],
-                api_key: result[i]["api_key"],
-                state: "offline",
-                lastStateChange: Date.now()
-            };
+
+            if(empty(users[result[i]["email"]])){
+                users[result[i]["email"]] = {};
+            }
+
+
+            users[result[i]["email"]]["email"] = result[i]["email"];
+            users[result[i]["email"]]["first_name"] = result[i]["first_name"];
+            users[result[i]["email"]]["last_name"] = result[i]["last_name"];
+            users[result[i]["email"]]["address"] = result[i]["address"];
+            users[result[i]["email"]]["api_key"] = result[i]["api_key"];
+
+            if(firstUserRefresh){
+                users[result[i]["email"]]["state"] = "offline";
+                users[result[i]["email"]]["lastStateChange"] = Date.now();
+                   
+            }
+            
+
         }
         //console.log(users);
+        firstUserRefresh = false;
         whoIsOnline();
     });    
 }
@@ -591,32 +632,72 @@ setInterval(function(){
                     case "lights":{
                         var room = req.body.room;
                         var bright = parseInt(req.body.brightness);
-                        if (empty(rooms[room])){
-                            return;
-                        }
+                        var type = req.body.type;
+                        
 
-                        console.log(typeof bright);
-                        roomUse = rooms[room];
+                        console.log(type);
 
-                        if (bright < 20){
-                            roomUse.set({set_state: false, brightness: bright}).then(function(result){
-                                console.log(result);
+                        if (type == "tasmota"){
 
-                                roomUse.get().then(function(status){
-                                    res.send({status: 200, light: status});
-                                    return;
-                                });
-                            });    
-                        } else {
-                            roomUse.set({set_state: true, brightness: bright}).then(function(result){
-                                console.log(result);
+                            if (empty(info.rooms.tasmota[room])){
+                                return;
+                            }
+
+                            if (bright < 20){
+                                client.publish(`cmnd/${room}/POWER`, "OFF");
+                            } else {
+                                client.publish(`cmnd/${room}/Dimmer`, bright.toString());
+                            }
+
+                            res.send({"status": 200, "tasmota": info.rooms.tasmota[room]});
+
+                                
+                        } else if(type == "hue"){
                             
-                                roomUse.get().then(function(status){
-                                  console.log(status);
-                                  return;
-                                });
-                              });
+                            if (empty(info.rooms.hue[room])){
+                                return;
+                            }
+
+                            if(bright > 20){
+                                var hue_data = {"on": true, "bri": bright};
+                            } else {
+                                var hue_data = {"on": false};
+                            }
+
+                            request({
+                                uri: "http://192.168.2.17/api/" + info.hue.username + "/lights/" + info.rooms.hue[room].id + "/state",
+                                method: 'PUT',
+                                body: JSON.stringify(hue_data),
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            },
+                            function(error, response, body) {
+                                if(!error) {
+                                    var response = JSON.parse(body);
+                                    console.log(response.length);
+                                    for (var i = 0; i < response.length; i++){
+                                        
+                                        console.log(response[i].success)
+                                        if (response[i].success["/lights/1/state/bri"] != undefined){
+                                            info.rooms.hue[room].bri = response[i].success["/lights/1/state/bri"];
+                                        }
+
+                                        if (response[i].success["/lights/1/state/on"] != undefined){
+                                            info.rooms.hue[room].state = (response[i].success["/lights/1/state/on"] == "true" ? "ON" : "OFF");
+                                        }
+                                         
+                                    }
+                                }
+    
+                                res.send({"status": 200, "tasmota": info.rooms.tasmota, "hue": info.rooms.hue});
+                            });
+
+                            //res.send({"status": 200, "data": response.body});
+                        } else {
+                            res.send({"status": 400, "message": "Unknown type."});
                         }
+                        
                         
                         return;
                     }
@@ -649,6 +730,7 @@ setInterval(function(){
 
                             //if user is home
                             if (users[result[0].email].state == "offline"){
+                                console.log("date changed")
                                 users[result[0].email].lastStateChange = Date.now()
                             }
                             users[result[0].email].state = "online";
@@ -657,6 +739,7 @@ setInterval(function(){
 
                             //if user is not home
                             if (users[result[0].email].state == "online"){
+                                console.log("date changed")
                                 users[result[0].email].lastStateChange = Date.now()
                             }
                             users[result[0].email].state = "offline";
@@ -740,42 +823,36 @@ setInterval(function(){
                     //Im really not sure how this works..
 
 
-                    var rooms_status = {};
-                    console.log(Object.keys(rooms).length)
-                    // for (let i = 0; i < Object.keys(rooms).length; i++){
+                    var tasmota_lights = {};
+                    var hue_lights = {};
 
-
-                    //     var room_name = Object.keys(rooms)[i]
-                    //     console.log(room_name + ": ", rooms[room_name]);
-
-
-                    //     rooms[room_name].get().then(function(status){
-                    //         //console.log(status)
-                    //         rooms_status[room_name] = status
-                    //         //console.log()
-                    //     });
-
-
-                    // }
-
-                    for (var i=0; i<Object.keys(rooms).length; i++) {
-                        (function(num){
-                            setTimeout(function(){
-
-                                var room_name = Object.keys(rooms)[num]
-
-                                rooms[room_name].get().then(function(status){
-                                    rooms_status[room_name] = status
-
-                                    if(num == Object.keys(rooms).length-1){
-                                        res.send({status: 200, lights: rooms_status});
-                                    }
-
-                                });
-                            }, 1000 * (i+1)); 
-                        })(i);  
-                    }  
                     
+
+                    request({
+                        uri: "http://192.168.2.17/api/" + info.hue.username + "/lights",
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    },
+                    function(error, response, body) {
+                        if(!error) {
+
+                            for (var i = 0; i < Object.keys(info.rooms.hue).length; i++){
+                                var room = Object.keys(info.rooms.hue)[i];
+                                var id = info.rooms.hue[room].id;
+                                console.log(room)
+                                info.rooms.hue[room].bri = JSON.parse(body)[id].state.bri;
+                                info.rooms.hue[room].state = (JSON.parse(body)[id].state.on == true) ? "ON" : "OFF";
+                                console.log(info.rooms.hue);
+                            }
+                        }
+
+                        res.send({"status": 200, "tasmota": info.rooms.tasmota, "hue": info.rooms.hue});
+                    });
+
+                    
+
                     break;
                 }
 

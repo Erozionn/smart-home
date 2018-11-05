@@ -25,6 +25,8 @@ var isReachable      = require('is-reachable');
 var mysql            = require('mysql');
 var functions        = require('./lib/functions');
 var info             = require('./config/hiddenInfo')
+var async            = require("async");
+var mqtt             = require('mqtt')
 var users            = {};
 
 //Connect to DB.
@@ -71,7 +73,8 @@ app.use(flash()); // use connect-flash for flash messages stored in session
 
 
 // routes ======================================================================
-require('./routes.js')(app, passport, express, isReachable, url, request, bodyParser, empty, nmap, io, con, functions, info, users);//, passportSocketIo, cookieParser, session); // load our routes and pass in our app and fully configured passport
+require('./routes.js')(app, passport, express, isReachable, url, request, bodyParser,
+     empty, nmap, io, con, functions, info, users, async, mqtt);//, passportSocketIo, cookieParser, session); // load our routes and pass in our app and fully configured passport
 
 
 

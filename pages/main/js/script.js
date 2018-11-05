@@ -33,10 +33,6 @@ if(!isMobile) {
         $(".pages-inner").css({"height": body_height - footer_height - header_height});    
     
     });
-
-    $('.pages-inner').mCustomScrollbar({
-
-    });
 }
 
 
@@ -55,8 +51,15 @@ $.ajax({
     }
 });
 
+
+for (var i = 0; i < $(".rooms .room a[uk-toggle]").length; i++){
+    var color = $(".rooms .room:eq("+i+")").find("a i").css("background-color");
+    var target = $(".rooms .room:eq("+i+") a").attr("uk-toggle").replace("target: ", "");
+    $(".modal-header", target).css({"background-color": color});
+}
+
 // =====================================
-// Clock ==============================
+// Clock ===============================
 // =====================================
 
 var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
@@ -234,7 +237,7 @@ $('.carousel').carousel({
     interval: false
   }).on('slide.bs.carousel', function (e) {
     console.log(e.to)
-    
+
     if ($(".uk-modal.uk-open").length > 0){
         UIkit.modal($(".uk-modal.uk-open")).hide();    
     }
@@ -242,7 +245,10 @@ $('.carousel').carousel({
     $(".nav-item.active").toggleClass("active");
     $(".nav-item:eq(" + e.to + ")").toggleClass("active");
 
-    $(".pages-inner").mCustomScrollbar("scrollTo", "top", {scrollInertia: 300});
+    $('.pages-inner').animate({
+        scrollTop: 0
+    }, 2000);
+    //$(".pages-inner").mCustomScrollbar("scrollTo", "top", {scrollInertia: 300});
 });
 
 
@@ -250,7 +256,7 @@ if (isMobile){
     $(window).swipe( {
             swipe: function(event, direction, distance, duration, fingerCount, fingerData) {
             
-                if(direction == null){
+            if(direction == null || $(".uk-open").length > 0){
                 return;
             }
             
@@ -264,113 +270,60 @@ if (isMobile){
                 }
             }
 
+            $('.pages-item:not(.active)').css({'left': 0});
+
             if ($(".uk-modal.uk-open").length > 0){
                 UIkit.modal($(".uk-modal.uk-open")).hide();    
             }
             
             
+        },
+        swipeStatus:function(event, phase, direction, distance, duration, fingers, fingerData, currentDirection){
+            if(direction == null || $(".uk-open").length > 0){
+                return;
+            }
+
+
+            // if (direction == "left" || direction == "right") {
+            //     $('.pages-item.active').css({direction: distance});
+            // }
+
+            if(direction =="left"){
+                $('.pages-item.active').css({'left': -distance});
+            } else if (direction =="right"){
+                $('.pages-item.active').css({'left': distance});
+            }
+
+            if (phase == "cancel") {
+                $('.pages-item.active').animate({'left': 0}, 100);
+            }
         }
     });    
 }
 
-// var itemIndexOld = 0;
-// $(document).on("click", ".nav-item", function(e){
-//     e.preventDefault();
-//     var item = $(this);
-//     var itemIndex = $(".nav-item").index(item);
-//     if($(this).children("a").hasClass("disabled") == true){
-//         return;
-//     }
-//     //console.log("Old: " +itemIndexOld + " New: " +itemIndex);
-//     direction = "";
-//     direction2 = "";
-//     if(itemIndex > itemIndexOld){
-//         direction = "uk-animation-slide-left-medium";
-//         direction2 = "uk-animation-slide-right-medium";
-//         //console.log("right");
-//     } else if(itemIndex < itemIndexOld){
-//         direction = "uk-animation-slide-right-medium";
-//         direction2 = "uk-animation-slide-left-medium";
-//         //console.log("left");
-//     }
-
-    
-//     $(".pages-item.active").toggleClass("active " + direction);
-//     $(".pages-item:eq("+itemIndex+")").toggleClass("active " + direction2);
-//     $(".pages-item:eq("+itemIndexOld+")").removeClass(direction).removeClass(direction2);
-//     itemIndexOld = itemIndex;
-//     $(".nav-item.active").toggleClass("active");
-//     $(this).toggleClass("active");
-    
-
-    
-
-//     if($(".navbar-collapse").hasClass("show")){
-//        $(".navbar-collapse").removeClass("show");
-//     }
-// });
-
-// //Enable swiping...
-// var old_page;
-// $(window).swipe( {
-//     swipe: function(event, direction, distance, duration, fingerCount, fingerData) {
-//         $(".pages-item").css({"left": 0}); 
-//     console.log(event)
-//     if(direction == null){
-//         return;
-//     }
-//     var new_page
-
-//     old_page = $(".nav-item").index($(".nav-item.active"));
-
-//     if (direction == "left"){
-
-//         if (old_page >= $('.nav-item').length - 1){
-//             new_page = 0;
-//         } else {
-//             new_page = old_page + 1;
-//         }
-        
-
-//         direction_animation = "uk-animation-slide-left";
-//         direction_animation2 = "uk-animation-slide-right";
-//     } else if (direction == "right"){
-//         if (old_page > 0){
-//             new_page = old_page - 1;
-//         } else {
-//             new_page = $('.nav-item').length - 1;
-//         }
-//             direction_animation = "uk-animation-slide-right";
-//             direction_animation2 = "uk-animation-slide-left";
-//     }
-
-//     $(".nav-item.active").toggleClass("active");
-//     $(".nav-item:eq(" + new_page + ")").toggleClass("active");
-//     $(".pages-item.active").toggleClass("active " + direction_animation);
-
-//     $(".pages-item:eq("+new_page+")").toggleClass("active " + direction_animation2);
-//     $(".pages-item:eq("+old_page+")").removeClass(direction_animation).removeClass(direction_animation2);
-//     old_page = new_page;
 
 
-//     //console.log("Swipping to page " + new_page + " from " + old_page + " page.");
-//   },
-//   swipeStatus: function(event, phase, direction, distance, duration, fingers, fingerData, currentDirection){
-    
-//     if(direction == "right"){
-//         $(".pages-item.active").css({"left": distance});
-//     } else if(direction == "left") {
-//         $(".pages-item.active").css({"left": -distance});
-//     } else {
-//         return;
-//     }
-    
-//     console.log(direction + ": " + distance);
-//   },
-//   threshold:100,
-//   //maxTimeThreshold: 500,
-//   fingers:'all'
-// });
+// =====================================
+// Chart Drop Shadow ===================
+// =====================================
+
+let draw = Chart.controllers.line.prototype.draw;
+Chart.controllers.line = Chart.controllers.line.extend({
+    draw: function() {
+        draw.apply(this, arguments);
+        let ctx = this.chart.chart.ctx;
+        let _stroke = ctx.stroke;
+        ctx.stroke = function() {
+            ctx.save();
+            ctx.shadowColor = 'rgb(0, 0, 0, 0.2)';
+            ctx.shadowBlur = 25;
+            ctx.shadowOffsetX = 10;
+            ctx.shadowOffsetY = 22;
+            _stroke.apply(this, arguments)
+            ctx.restore();
+        }
+    }
+});
         
 // =====================================
 // Weather =============================
@@ -387,48 +340,247 @@ function refreshWeather(){
             $(".outside-temp h1.temp").html(Math.round(data.currently.temperature) + "<sup>°</sup>");
             $(".outside-temp .feels-like-temp").html(Math.round(data.currently.apparentTemperature) + "<sup>°</sup>");
             $(".outside-temp img").attr("src", "main/images/weather/" + data.currently.icon + ".svg");
-            $(".welcome h5").html('It will be '+data.hourly["summary"].toLowerCase().replace(".","")+' with a high of '+parseInt(data.daily.data[0].temperatureMax)+'<sup>°</sup> and a low of '+parseInt(data.daily.data[0].temperatureMin)+'<sup>°</sup>.')
+            //$(".welcome h5").html('It will be '+data.hourly["summary"].toLowerCase().replace(".","")+' with a high of '+parseInt(data.daily.data[0].temperatureMax)+'<sup>°</sup> and a low of '+parseInt(data.daily.data[0].temperatureMin)+'<sup>°</sup>.')
             
             var hourlyData = {};
             hourlyData["temp"] = [];
             hourlyData["time"] = [];
-            for (var i = 0; i < data.hourly.data.length; i++){
+            for (var i = 0; i < 24; i++){
                 hourlyData["temp"].push(Math.round(data.hourly.data[i].temperature));
-                hourlyData["time"].push(moment.unix(data.hourly.data[i].time).format("ddd, h A"));
+                hourlyData["time"].push(moment.unix(data.hourly.data[i].time).format("h a"));
+                
             }
-            var gradient = $('#hourly-weather-chart')[0].getContext('2d').createLinearGradient(0, 0, 0, 400);
-            //gradient.addColorStop(0, 'rgb(0, 184, 153,1)');   
-            //gradient.addColorStop(1, 'rgb(0, 255, 212,0.5)');
-            console.log(hourlyData);
+
+            $(".daily-weather ul.cards").html("");
+            for (var i = 0; i < 3; i++){
+                var obj = {};
+
+                var day = moment.unix(data.hourly.data[i*6].time).calendar(null, {
+
+                    
+                    sameDay: function (now) {
+                        //console.log(this)
+
+
+                        if (this.isBetween(moment("00", "HH"), moment("04", "HH"), null, "[)")) {
+                            obj = { "title": 'Overnight', "class":'night'};
+                            this.subtract(1, 'days');
+                        } else if (this.isBetween(moment("04", "HH"), moment("12", "HH"), null, "[)")) {
+                            obj = { "title": 'Morning', "class":'morning'};
+                        } else if(this.isBetween(moment("12", "HH"), moment("17", "HH"), null, "[)")) {
+                            obj = { "title": 'Afternoon', "class":'afternoon'};
+                        } else {
+                            obj = { "title": 'Evening', "class":'night'};
+                        }
+
+                        return 'ddd';
+                      },
+                    nextDay: function (now) {
+                        //console.log(this)
+                        if (this.isBetween(moment("00", "HH").add(1, "days"), moment("04", "HH").add(1, "days"), null, "[)")) {
+                            obj = { "title": 'Overnight', "class":'night'};
+                            this.subtract(1, 'days');
+                            return 'ddd';
+                          } else if (this.isBetween(moment("04", "HH").add(1, "days"), moment("12", "HH").add(1, "days"), null, "[)")) {
+                            obj = { "title": 'Morning', "class":'morning'};
+                            return 'ddd';
+                          } else if(this.isBetween(moment("12", "HH").add(1, "days"), moment("17", "HH").add(1, "days"), null, "[)")) {
+                            obj = { "title": 'Afternoon', "class":'afternoon'};
+                            return 'ddd';
+                        } else {
+                            obj = { "title": 'Night', "class":'night'};
+                            return 'ddd';
+                        }
+                      },
+                    nextWeek: 'dddd',
+                    lastDay: '[Yesterday]',
+                    lastWeek: '[Last] dddd',
+                    sameElse: 'DD/MM/YYYY'
+                });
+
+                //console.log(day +": "+ obj.title)
+
+                $(".daily-weather ul.cards").append(
+                    `<li class='${obj.class}'>
+                        <div class='day-title'>
+                            <span>${day + " " + obj.title}</span>
+                        </div>
+                        <div class="day-icon">
+                            <img src="${"main/images/weather/" + data.hourly.data[i*6].icon + ".svg"}">
+                            <h6 class="temp">${parseInt(data.hourly.data[i*6].temperature)}<sup>°C</sup></h6>
+                            <span class="feel-like">Feels Like</span>
+                            <span class="feel-like-temp">${parseInt(data.hourly.data[i*6].apparentTemperature)}<sup>°C</sup></span>
+                        </div>
+                    </li>`
+                )
+                //console.log(data.hourly.data[i*6]);
+            }
+
+            $(".weekly-weather ul.cards").html("");
+            for (var i = 1; i < 8; i++){
+                var obj = {};
+
+               // if (i == 1){
+                    //var day = "Tomorrow";
+                //} else {
+                    var day = moment.unix(data.daily.data[i].time).format("ddd");
+                //}
+                    
+                
+
+                //console.log(day)
+
+                $(".weekly-weather ul.cards").append(
+                    `<li class='weekly-day day-${i}'>
+                        <div class='day-title'>
+                            <span>${day}</span>
+                        </div>
+                        <h6 class="temp">${parseInt(data.daily.data[i].temperatureHigh)}<sup>°C</sup></h6>
+                        <div class="day-icon">
+                            <img src="${"main/images/weather/" + data.daily.data[i].icon + ".svg"}">
+                        </div>
+                        <div class='wind'>
+                            <span class="speed">${parseInt(data.daily.data[i].windSpeed)}</span>
+                            <span class="kmh">km/h</span>
+                            <i class="far fa-location-arrow direction" style='transform: rotate(${data.daily.data[i].windBearing - 45}deg)'></i>
+                        </div>
+                        <div class="pop">
+                           <span>pop: ${(Math.round((data.daily.data[i].precipProbability*100)/10)*10)}%</span>
+                        </div>
+                        
+                    </li>`
+                );
+
+                console.log(data.daily.data[i].precipProbability > 0.2)
+
+                if(data.daily.data[i].precipProbability > 0.15){
+                    $(".weekly-weather ul.cards .day-" + i + " .pop").append(`
+                        <span>~${Math.round(data.daily.data[i].precipIntensity*25.4)}mm</span>
+                    `);
+                }
+
+                //console.log(data.daily.data[i]);
+            }
+
+            var weeklyData = {};
+            weeklyData["tempHigh"] = [];
+            weeklyData["tempLow"] = [];
+            weeklyData["time"] = [];
+
+            for (var i = 1; i < 8; i++){
+                weeklyData["tempHigh"].push(Math.round(data.daily.data[i].temperatureHigh));
+                weeklyData["tempLow"].push(Math.round(data.daily.data[i].temperatureLow));
+                weeklyData["time"].push(moment.unix(data.daily.data[i].time).format("ddd"));
+                
+            }
+
+            //console.log(data);
+            var gradient = $('#hourly-weather-chart')[0].getContext('2d').createLinearGradient(0, 30, 0, 70);
+            gradient.addColorStop(0, 'rgb(0, 184, 153,1)');   
+            gradient.addColorStop(1, 'rgb(0, 184, 153,0)');
+
+            var gradient2 = $('#hourly-weather-chart')[0].getContext('2d').createLinearGradient(0, 0, 300, 0);
+            gradient2.addColorStop(0, 'rgb(0, 119, 184, 0)');
+            gradient2.addColorStop(0.1, 'rgb(0, 119, 184, 0)');   
+            gradient2.addColorStop(0.3, 'rgb(0, 119, 184, 1)');
+            gradient2.addColorStop(0.7, 'rgb(0, 119, 184, 1)');
+            gradient2.addColorStop(0.9, 'rgb(0, 119, 184, 0)');
+            gradient2.addColorStop(1, 'rgb(0, 119, 184, 0)');
+
+            var gradient3 = $('#hourly-weather-chart')[0].getContext('2d').createLinearGradient(0, 0, 300, 0);
+            gradient3.addColorStop(0, 'rgb(255, 51, 102, 0)');
+            gradient3.addColorStop(0.2, 'rgb(255, 51, 102, 0)'); 
+            gradient3.addColorStop(0.3, 'rgb(255, 51, 102, 1)');
+            gradient3.addColorStop(0.7, 'rgb(255, 51, 102, 1)');
+            gradient3.addColorStop(0.9, 'rgb(255, 51, 102, 0)'); 
+            gradient3.addColorStop(1, 'rgb(255, 51, 102, 0)');
+            //console.log(hourlyData);
+
+            var graph_options = {
+                legend: {
+                    display: false
+                 },
+                 tooltips: {
+                    enabled: false
+                 },
+                scales: {
+                    yAxes: [{
+                        gridLines: {
+                            display: false,
+                            drawBorder: false,
+                            // drawOnChartArea: false,
+                        },
+                        ticks: {
+                            fontColor: "#d0d0d0",
+                            callback: function(value, index, values) {
+                                return value + "° ";
+                            }
+                        }
+                    }],
+                    xAxes: [{
+                        gridLines: {
+                            display: false,
+                            drawBorder: false,
+                            //drawOnChartArea: false,
+                        },
+                        ticks: {
+                            //display: false,
+                            // Include a dollar sign in the ticks
+                            fontColor: "#d0d0d0",
+                        }
+                    }],
+                    
+                },
+                elements: { 
+                    point: { 
+                        radius: 2 
+                    } 
+                }
+            };
+
+            
+
             var myLineChart = new Chart($('#hourly-weather-chart')[0].getContext('2d'), {
                 type: 'line',
                 data: {
                     labels: hourlyData["time"],
                     datasets: [{
+                        borderWidth: 2,
                         label: "48 Hour Outside Temperature",
                         //backgroundColor: '#01ebc2',
                         borderColor: '#00ba9a',
                         data: hourlyData["temp"],
-                        backgroundColor : "#00AD91", // Put the gradient here as a fill color
+                        backgroundColor : "transparent", // Put the gradient here as a fill color
+                        //pointBorderColor: '#2602ff',
+                        pointBackgroundColor: "#00ba9a",
                     }],
                 },
-                options: {
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                // Include a dollar sign in the ticks
-                                callback: function(value, index, values) {
-                                    return value + "°";
-                                }
-                            }
-                        }]
-                    },
-                    elements: { 
-                        point: { 
-                            radius: 0 
-                        } 
-                    }
-                }
+                options: graph_options,
+                //options: options
+            });
+            var myLineChart2 = new Chart($('#weekly-weather-chart')[0].getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: weeklyData["time"],
+                    datasets: [{
+                        borderWidth: 2,
+                        label: "7 Day Outside Temperature",
+                        //backgroundColor: '#01ebc2',
+                        borderColor: '#0077b8',
+                        data: weeklyData["tempLow"],
+                        backgroundColor : "transparent",//"#00AD91", // Put the gradient here as a fill color
+                        pointBackgroundColor: "#0077b8",
+                    },{
+                        borderWidth: 2,
+                        label: "7 Day Outside Temperature",
+                        //backgroundColor: '#01ebc2',
+                        borderColor: '#f36',
+                        data: weeklyData["tempHigh"],
+                        backgroundColor : "transparent",//gradient3,//"#00AD91", // Put the gradient here as a fill color
+                        pointBackgroundColor: "#f36",
+                    }],
+                },
+                options: graph_options,
                 //options: options
             });
             if(data.alerts){
@@ -717,7 +869,7 @@ function refreshHomePage(){
         welcomeMessage = first_name;
     }
 
-    $(".welcome h4").html(welcomeMessage + ",");
+    $(".welcome h4").html(welcomeMessage + ".");
 }
 
 refreshHomePage()
@@ -745,9 +897,82 @@ refreshHomePage()
 //         'max': 255
 //     }
 // });
-var rooms = {};
+var rooms = {
+    tasmota: {},
+    hue: {}
+};
 
-var lights_first = true;
+var lights_first = {
+    tasmota: true,
+    hue: true
+};
+
+function initLight(type, room_name, response){
+
+    if (type == "hue"){
+        var obj = rooms.hue;
+        var resp = response.hue;
+        var max_brightness = 254;
+
+    } else if (type == "tasmota"){
+        var obj = rooms.tasmota;
+        var resp = response.tasmota;
+        var max_brightness = 100;
+    } else {
+        console.log("Error: "+type+" is an unknown light type.");
+        return;
+    }
+
+    if (lights_first[type]){
+        obj[room_name] = $("[room='" + room_name + "'][type='" + type + "'] .dimmer")[0];
+        noUiSlider.create(obj[room_name], {
+            start: resp[room_name].bri,
+            connect: [true, false],
+            direction: 'rtl',
+            orientation: "vertical",
+            behaviour: 'snap',
+            range: {
+                'min': 0,
+                'max': max_brightness
+            },
+            format: wNumb({
+                decimals: 0
+            })
+        });
+
+        obj[room_name].noUiSlider.on("end", function(){
+
+            if (this.get() < 20){
+                this.set(0);
+            }
+
+            if (this.get() >= 225){
+                this.set(255);
+            }
+
+            //console.log(this.get());
+
+            $.ajax({
+                url: '../api/'+api_key+'/lights',
+                timeout: 5000,
+                data: {"type": type, 'brightness': this.get(), 'room': room_name},
+                dataType: 'json',
+                method: 'POST',
+                success: function(response) {
+
+                }
+            });
+        });
+
+        //end of first load.
+        lights_first[type] = false;
+        return obj[room_name];
+    } else {
+
+        //Update sliders periodically.
+        obj[room_name].noUiSlider.set(resp[room_name].bri);
+    }    
+}
 
 
 function refreshLights(){
@@ -758,67 +983,26 @@ function refreshLights(){
         dataType: 'json',
         method: 'GET',
         success: function(response) {
-            for (var i = 0; i < Object.keys(response.lights).length; i++){
-                var room_name = Object.keys(response.lights)[i]
-                //console.log(response.lights[room_name].brightness);
+            console.log("refreshing lights");
+            console.log(response);
+            
+            for (var i = 0; i < Object.keys(response["tasmota"]).length; i++){
+                var room_name = Object.keys(response.tasmota)[i];
 
+                initLight("tasmota", room_name, response)
+            }
 
-                if (lights_first){
-                    rooms[room_name] = $("#"+room_name+" .dimmer")[0];
-                    noUiSlider.create(rooms[room_name], {
-                        start: response.lights[room_name].brightness,
-                        connect: [true, false],
-                        direction: 'rtl',
-                        orientation: "vertical",
-                        behaviour: 'snap',
-                        range: {
-                            'min': 0,
-                            'max': 255
-                        },
-                        format: wNumb({
-                            decimals: 0
-                        })
-                    });
+            for (var i = 0; i < Object.keys(response["hue"]).length; i++){
+                var room_name = Object.keys(response.hue)[i];
 
-                    rooms[room_name].noUiSlider.on("end", function(){
-
-                        if (this.get() < 20){
-                            this.set(0);
-                        }
-
-                        if (this.get() >= 225){
-                            this.set(255);
-                        }
-
-                        //console.log(this.get());
-
-                        $.ajax({
-                            url: '../api/'+api_key+'/lights',
-                            timeout: 5000,
-                            data: {'brightness': this.get(), 'room': 'alex_room'},
-                            dataType: 'json',
-                            method: 'POST',
-                            success: function(response) {
-
-                            }
-                        });
-                    });
-
-                    //end of first load.
-                    lights_first = false;
-
-                } else {
-
-                    //Update sliders periodically.
-                    rooms[room_name].noUiSlider.set(response.lights[room_name].brightness);
-                }
+                initLight("hue", room_name, response)
             }
         }
     });    
 }
 
 refreshLights();
-setInterval(refreshLights(), 60000);
+setInterval(refreshLights, 30000);
 
 
 
